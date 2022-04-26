@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 //the title style
-Widget titleStyle({
-  required String title,
-}) {
+Widget titleStyle({required String title}) {
   return Text(
     title,
     style: GoogleFonts.spaceMono(
@@ -20,43 +18,36 @@ Widget titleStyle({
 // text field hint text style
 Widget textStyle({
   required String text,
+  Color textColor = const Color(0xFF58777B),
+  bool bottomPadding = true,
+}) {
+  return Padding(
+    padding: bottomPadding
+        ? const EdgeInsets.only(bottom: 5.0)
+        : const EdgeInsets.only(bottom: 0.0),
+    child: Text(
+      text,
+      style: GoogleFonts.spaceMono(
+        textStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: textColor,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget resultTextStyle({
+  required String text,
 }) {
   return Text(
     text,
     style: GoogleFonts.spaceMono(
       textStyle: const TextStyle(
         fontWeight: FontWeight.bold,
-        color: Color(0xFF58777B),
+        color: Color(0xFF29c0AD),
+        fontSize: 34.0,
       ),
-    ),
-  );
-}
-
-//Color(0xFF00474B),
-
-//wiget to return tips buttons
-Widget button({
-  // required Function function,
-  required String btnText,
-  Color textColor = const Color(0xFFFFFFFF),
-  Color btnColor = const Color(0xFF00474B),
-}) {
-  return TextButton(
-    onPressed: () {},
-    child: Text(
-      btnText,
-      textAlign: TextAlign.center,
-      style: GoogleFonts.spaceMono(
-        textStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 28,
-          color: textColor,
-        ),
-      ),
-    ),
-    style: TextButton.styleFrom(
-      primary: const Color(0xFFF3F8FB),
-      backgroundColor: btnColor,
     ),
   );
 }
