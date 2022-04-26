@@ -5,14 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 //wiget to return tips buttons
 Widget button({
-  // required Function function,
+  required Function function,
   required String btnText,
   Color textColor = const Color(0xFFFFFFFF),
   Color btnColor = const Color(0xFF00474B),
   double fontSize = 28,
 }) {
   return TextButton(
-    onPressed: () {},
+    onPressed: () => function(),
     child: Text(
       btnText,
       textAlign: TextAlign.center,

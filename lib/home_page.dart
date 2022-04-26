@@ -4,8 +4,36 @@ import 'package:google_fonts/google_fonts.dart';
 import 'widgets/button.dart';
 import 'widgets/text_style.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  double bill = 0.0;
+  double tip = 0.0;
+  int person = 1;
+
+  double tipPerPerson = 0;
+  double totlalPerPerson = 0;
+
+  TextEditingController billController = TextEditingController();
+  TextEditingController tipController = TextEditingController();
+  TextEditingController personController = TextEditingController();
+
+  void calculate() {
+    tipPerPerson = (bill * tip) / person;
+    totlalPerPerson = (bill * (1 + tip)) / person;
+  }
+
+  void tipButtonFunction(double tipPercentage) {
+    setState(() {
+      tip = tipPercentage / 100;
+      calculate();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +76,19 @@ class HomePage extends StatelessWidget {
                 children: [
                   textStyle(text: "Bill"),
                   TextField(
+                    controller: billController,
+                    onEditingComplete: () {
+                      setState(() {
+                        if (billController.text.isNotEmpty) {
+                          bill = double.parse(billController.text);
+                        } else {
+                          bill = 0;
+                        }
+                        //to dismiss the keybord after editing
+                        FocusScope.of(context).unfocus();
+                        calculate();
+                      });
+                    },
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       filled: true,
@@ -81,25 +122,86 @@ class HomePage extends StatelessWidget {
                       mainAxisSpacing: 15,
                       crossAxisCount: 2,
                       children: [
-                        button(btnText: "5%"),
-                        button(btnText: "10%"),
+                        button(
+                          btnText: "5%",
+                          function: () {
+                            tipButtonFunction(5);
+                          },
+                        ),
+                        button(
+                          btnText: "10%",
+                          function: () {
+                            tipButtonFunction(10);
+                          },
+                        ),
                         button(
                           btnText: "15%",
+                          function: () {
+                            tipButtonFunction(15);
+                          },
                           btnColor: const Color(0xFF26C2AD),
                           textColor: const Color(0xFF00474B),
                         ),
-                        button(btnText: "25%"),
-                        button(btnText: "50%"),
                         button(
-                          btnText: "Custom",
-                          textColor: const Color(0xFF00474F),
-                          btnColor: const Color(0xFFF3F8FB),
+                          btnText: "25%",
+                          function: () {
+                            tipButtonFunction(25);
+                          },
+                        ),
+                        button(
+                          btnText: "50%",
+                          function: () {
+                            tipButtonFunction(50);
+                          },
+                        ),
+                        TextField(
+                          controller: tipController,
+                          onEditingComplete: () {
+                            setState(() {
+                              if (tipController.text.isNotEmpty) {
+                                tip = double.parse(tipController.text) / 100;
+                              } else {
+                                tip = 0;
+                              }
+                              //to dismiss the keybord after editing
+                              FocusScope.of(context).unfocus();
+                              calculate();
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Custom  ",
+                            filled: true,
+                            fillColor: Color(0xFFF3F8FB),
+                            border: InputBorder.none,
+                          ),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.spaceMono(
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Color(0xFF00474B),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   textStyle(text: "Number of People"),
                   TextField(
+                    controller: personController,
+                    onEditingComplete: () {
+                      setState(() {
+                        if (personController.text.isNotEmpty) {
+                          person = int.parse(personController.text);
+                        } else {
+                          person = 1;
+                        }
+                        //to dismiss the keybord after editing
+                        FocusScope.of(context).unfocus();
+                        calculate();
+                      });
+                    },
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       filled: true,
@@ -148,7 +250,8 @@ class HomePage extends StatelessWidget {
                                 )
                               ],
                             ),
-                            resultTextStyle(text: "\$4.27"),
+                            resultTextStyle(
+                                text: "\$${tipPerPerson.toStringAsFixed(2)}"),
                           ],
                         ),
                         Row(
@@ -167,19 +270,44 @@ class HomePage extends StatelessWidget {
                                 )
                               ],
                             ),
-                            resultTextStyle(text: "\$32.79"),
+                            resultTextStyle(
+                                text:
+                                    "\$${totlalPerPerson.toStringAsFixed(2)}"),
                           ],
                         ),
                         SizedBox(
-                          height: 50,
-                          width: double.infinity,
-                          child: button(
-                            fontSize: 22,
-                            btnText: "RESET",
-                            btnColor: const Color(0xFF26C2AD),
-                            textColor: const Color(0xFF00474B),
-                          ),
-                        )
+                            height: 50,
+                            width: double.infinity,
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  tip = 0;
+                                  person = 1;
+                                  bill = 0;
+                                  calculate();
+                                  tipController.clear();
+                                  personController.clear();
+                                  billController.clear();
+                                  tipPerPerson = 0.0;
+                                  totlalPerPerson = 0.0;
+                                });
+                              },
+                              child: Text(
+                                "RESET",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.spaceMono(
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: Color(0xFF00474B),
+                                  ),
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                primary: const Color(0xFFF3F8FB),
+                                backgroundColor: const Color(0xFF26C2AD),
+                              ),
+                            ))
                       ],
                     ),
                   ),
